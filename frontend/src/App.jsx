@@ -1,37 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from './components/Header';
-import MainContent from './components/Article';
-import Footer from './components/Footer';
+import Article from './components/Article';
 
-function App() {
+const App = () => {
   const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  // viewMode can be 'all', 'original', or 'enhanced'
+  const [viewMode, setViewMode] = useState('all'); 
 
-  const fetchArticles = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
       const res = await axios.get('http://localhost:8000/api/articles');
-      console.log("RAW API RESPONSE:", res.data);
-      setArticles(res.data.data);
+      setArticles(res.data.data || res.data);
     } catch (err) {
-      console.error("Fetch failed", err);
+      console.error("API Error:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => { fetchArticles(); }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
-      <Header onRefresh={fetchArticles} loading={loading} />
-      
-      <MainContent articles={articles} />
-      
-      <Footer />
+    <div className="min-h-screen bg-white flex flex-col">
+      <Header 
+        onRefresh={fetchData} 
+        loading={loading} 
+        viewMode={viewMode} 
+        setViewMode={setViewMode} 
+      />
+      <Article 
+        articles={articles} 
+        loading={loading} 
+        viewMode={viewMode} 
+      />
     </div>
   );
-}
+};
 
 export default App;
