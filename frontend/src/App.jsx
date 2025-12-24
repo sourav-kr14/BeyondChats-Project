@@ -12,6 +12,7 @@ function App() {
     setLoading(true);
     try {
       const res = await axios.get('http://localhost:8000/api/articles');
+      console.log("RAW API RESPONSE:", res.data);
       setArticles(res.data.data);
     } catch (err) {
       console.error("Fetch failed", err);

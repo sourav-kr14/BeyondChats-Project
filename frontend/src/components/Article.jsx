@@ -1,85 +1,144 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Sparkles, FileText, Globe, ArrowRight, Bookmark } from 'lucide-react';
+import { 
+  Sparkles, 
+  FileText, 
+  Globe, 
+  ArrowRight, 
+  Zap, 
+  CheckCircle2,
+  Search,
+  ExternalLink
+} from 'lucide-react';
 
-const Article = ({ articles, loading }) => {
-  const original = articles.find(a => a.version === 'original');
-  const enhanced = articles.find(a => a.version === 'updated');
+const Article = ({ articles = [], loading }) => {
+  
+  // --- DATA SELECTION LOGIC ---
+  const original = articles.find(a => a?.version?.toLowerCase() === 'original' && a?.content?.length > 0) || articles[0];
+  const enhanced = articles.find(a => (a?.version?.toLowerCase() === 'updated' || a?.version?.toLowerCase() === 'enhanced') && a?.id !== original?.id) || articles[articles.length - 1];
+
+  // --- HELPERS ---
+  const getReferences = (refs) => {
+    if (!refs) return [];
+    if (Array.isArray(refs)) return refs;
+    try {
+      const parsed = typeof refs === 'string' ? JSON.parse(refs) : refs;
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) { return []; }
+  };
 
   if (loading) return (
-    <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+    <div className="flex flex-col justify-center items-center h-[60vh] gap-4">
+      <div className="relative h-16 w-16">
+        <div className="absolute inset-0 rounded-full border-4 border-indigo-100"></div>
+        <div className="absolute inset-0 rounded-full border-4 border-t-indigo-600 animate-spin"></div>
+      </div>
+      <p className="text-slate-400 font-bold animate-pulse tracking-widest text-xs uppercase text-center">Neural Sync in Progress...</p>
     </div>
   );
 
+  // SHARED STYLES FOR SYMMETRY
+  const cardStyle = "relative bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-10 border border-white shadow-[0_20px_50px_rgba(0,0,0,0.06)] overflow-hidden min-h-[600px] flex flex-col";
+  const glowStyle = "absolute -inset-4 rounded-[3rem] blur-2xl opacity-10 transition duration-1000 animate-pulse";
+  const footerBoxStyle = "mt-auto bg-slate-900 rounded-[2rem] p-7 shadow-2xl border border-white/5";
+
   return (
-    <main className="max-w-7xl mx-auto px-6 py-12">
-      {/* 1. HERO SECTION: The Eye-Catching Title */}
-      <section className="relative mb-20 text-center">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_50%,rgba(99,102,241,0.13)_0%,rgba(255,255,255,0)_100%)]"></div>
-        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-widest mb-6 border border-indigo-100 shadow-sm">
-          <Bookmark size={14} /> Knowledge Hub Analysis
-        </span>
-        <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
-          {original?.title || "Project Insight"}
+    <main className="max-w-7xl mx-auto px-6 py-12 flex-grow">
+      
+      {/* --- HERO SECTION --- */}
+      <section className="relative mb-16 text-center">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(45%_40%_at_50%_50%,rgba(99,102,241,0.12)_0%,rgba(255,255,255,0)_100%)]"></div>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
+          <Zap size={14} className="text-indigo-600 fill-indigo-600" />
+          <span className="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Live Research Pipeline</span>
+        </div>
+        <h1 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight mb-4">
+          {original?.title || "Intelligent Analysis"}
         </h1>
-        <p className="text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
-          Comparing the original raw data with our optimized AI-driven enhancement.
-        </p>
       </section>
 
-      {/* 2. SIDE-BY-SIDE INTERFACE */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         
-        {/* LEFT: ORIGINAL (THE FOUNDATION) */}
+        {/* --- LEFT COLUMN: SOURCE --- */}
         <div className="group relative">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-slate-100 rounded-lg text-slate-500"><FileText size={20}/></div>
-            <h3 className="font-bold text-slate-400 uppercase tracking-widest text-sm">Source Content</h3>
-          </div>
-          <div className="bg-white rounded-[2rem] p-10 border border-slate-200 shadow-sm transition-all group-hover:shadow-md">
-            <div className="prose prose-slate prose-sm max-w-none opacity-80 italic">
-              <ReactMarkdown>{original?.content}</ReactMarkdown>
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT: ENHANCED (THE PREMIUM RESULT) */}
-        <div className="group relative">
-          {/* Decorative Glow */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-[2.1rem] blur opacity-20 group-hover:opacity-30 transition duration-1000"></div>
+          <div className={`${glowStyle} bg-slate-400 group-hover:opacity-20`}></div>
           
-          <div className="relative flex items-center gap-3 mb-6">
-            <div className="p-2 bg-indigo-600 rounded-lg text-white shadow-lg shadow-indigo-200"><Sparkles size={20}/></div>
-            <h3 className="font-bold text-indigo-600 uppercase tracking-widest text-sm">AI Enhanced Edition</h3>
-          </div>
-          
-          <div className="relative bg-white rounded-[2rem] p-10 border border-indigo-100 shadow-xl">
-            <div className="prose prose-indigo prose-lg max-w-none prose-headings:font-black prose-p:leading-relaxed text-slate-700">
-              <ReactMarkdown>{enhanced?.content}</ReactMarkdown>
-            </div>
-
-            {/* Premium Reference Card */}
-            {enhanced?.references && (
-              <div className="mt-12 bg-slate-50 rounded-2xl p-6 border border-slate-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                    <Globe size={14} /> Fact-Check Sources
-                  </h4>
-                  <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">VERIFIED</span>
-                </div>
-                <div className="space-y-3">
-                  {JSON.parse(enhanced.references).map((link, i) => (
-                    <a key={i} href={link} target="_blank" className="flex items-center group/link justify-between p-3 bg-white rounded-xl border border-slate-200 hover:border-indigo-400 transition-all">
-                      <span className="text-sm font-medium text-slate-600 truncate">{new URL(link).hostname}</span>
-                      <ArrowRight size={14} className="text-slate-300 group-hover/link:translate-x-1 group-hover/link:text-indigo-500 transition-all" />
-                    </a>
-                  ))}
-                </div>
+          <div className="relative flex items-center justify-between mb-6 px-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-slate-800 rounded-xl text-white shadow-lg">
+                <FileText size={20} />
               </div>
-            )}
+              <div>
+                <h3 className="font-black text-slate-900 uppercase tracking-widest text-[11px]">Source Context</h3>
+                <p className="text-[10px] text-slate-500 font-bold leading-none">Original Content</p>
+              </div>
+            </div>
+            <div className="text-[9px] font-black text-slate-400 border border-slate-200 px-2 py-1 rounded">V1.0</div>
+          </div>
+          
+          <div className={cardStyle}>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-slate-400 to-transparent opacity-30"></div>
+            
+            <div className="prose prose-slate prose-sm max-w-none text-slate-600 leading-relaxed mb-10">
+              <ReactMarkdown>{original?.content || "Fetching baseline article content..."}</ReactMarkdown>
+            </div>
+
+            
           </div>
         </div>
+
+        {/* --- RIGHT COLUMN: ENHANCED --- */}
+        <div className="group relative">
+          <div className={`${glowStyle} bg-indigo-500 group-hover:opacity-20`}></div>
+          
+          <div className="relative flex items-center justify-between mb-6 px-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-indigo-600 rounded-xl text-white shadow-xl shadow-indigo-200">
+                <Sparkles size={20} className="animate-pulse" />
+              </div>
+              <div>
+                <h3 className="font-black text-indigo-900 uppercase tracking-widest text-[11px]">Enhanced Insight</h3>
+                <p className="text-[10px] text-indigo-500 font-bold leading-none">AI Optimized Edition</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 bg-emerald-50 text-emerald-600 px-2 py-1 rounded-md text-[9px] font-black border border-emerald-100">
+              <CheckCircle2 size={10} /> VERIFIED
+            </div>
+          </div>
+          
+          <div className={cardStyle}>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-40"></div>
+            
+            <div className="prose prose-indigo prose-lg max-w-none text-slate-700 leading-relaxed mb-10">
+              <ReactMarkdown>{enhanced?.content || "Generating optimized neural output..."}</ReactMarkdown>
+            </div>
+
+            {/* SYMMETRICAL FOOTER BOX: REFERENCES */}
+            <div className={footerBoxStyle}>
+              <div className="flex items-center gap-2 mb-6">
+                 <Globe size={16} className="text-indigo-400" />
+                 <h4 className="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em]">Reference Hub</h4>
+              </div>
+              <div className="space-y-2">
+                {getReferences(enhanced?.references).length > 0 ? (
+                  getReferences(enhanced.references).map((link, i) => (
+                    <a key={i} href={link} target="_blank" rel="noreferrer" className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 hover:border-indigo-500/50 transition-all group/link">
+                      <span className="text-xs text-slate-300 group-hover/link:text-white truncate max-w-[200px] font-bold">
+                        {new URL(link).hostname.replace('www.', '')}
+                      </span>
+                      <ArrowRight size={14} className="text-slate-600 group-hover/link:text-indigo-400 group-hover/link:translate-x-1 transition-all" />
+                    </a>
+                  ))
+                ) : (
+                  <div className="p-4 bg-white/5 border border-white/5 rounded-2xl text-center">
+                    <span className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Internal Knowledge Store</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
   );
