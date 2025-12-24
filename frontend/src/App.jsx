@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from './components/Header';
 import Article from './components/Article';
+import Footer from './components/Footer'
 
 const App = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
-  // viewMode can be 'all', 'original', or 'enhanced'
   const [viewMode, setViewMode] = useState('all'); 
 
   const fetchData = async () => {
@@ -38,6 +38,8 @@ const App = () => {
         loading={loading} 
         viewMode={viewMode} 
       />
+      <Footer />
+
     </div>
   );
 };
