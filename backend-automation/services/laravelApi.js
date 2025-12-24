@@ -13,11 +13,8 @@ async function publishArticle(article) {
     if (error.response) {
       console.error("Laravel Error Data:", error.response.data);
       console.error("Laravel Error Status:", error.response.status);
-    }
-    else
-    {
-        console.error(error.message);
-        
+    } else {
+      console.error(error.message);
     }
   }
 }
