@@ -18,7 +18,7 @@ return new class extends Migration
             $table->longText('content');
             $table->string('source_url')->nullable();
             $table->enum('version',['original','updated'])->default('original');
-            $table->json('references')->nullable();
+            $table->text('references')->nullable();
             $table->timestamps();
 
         });
