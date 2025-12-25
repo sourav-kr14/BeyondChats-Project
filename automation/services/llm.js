@@ -1,10 +1,8 @@
 const Groq = require("groq-sdk");
 
-// Initialize the client
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 async function rewrite(title, contents, references) {
-  // FIX 1: Allow it to run even if only 1 reference is found
   if (!title || !contents || contents.length === 0) {
     throw new Error("Required parameter missing: Title or Content sources are empty.");
   }
@@ -13,7 +11,6 @@ async function rewrite(title, contents, references) {
     ? references.join("\n") 
     : "No URLs provided";
 
-  // FIX 2: Dynamically build the reference string so it doesn't break if contents[1] is missing
   const referenceContentSection = contents
     .map((text, index) => `### Reference Content ${index + 1}:\n${text}`)
     .join("\n\n");
@@ -35,14 +32,13 @@ ${referencelist}`;
   try {
     const completechat = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "llama-3.3-70b-versatile", // Great choice for technical writing
+      model: "llama-3.3-70b-versatile", 
       temperature: 0.7,
       max_tokens: 4096,
     });
     
     return completechat.choices[0].message.content;
   } catch (error) {
-    // Better logging to see if it's a rate limit or a context window issue
     console.error("Groq API Error:", error.response?.data || error.message);
     throw error;
   }

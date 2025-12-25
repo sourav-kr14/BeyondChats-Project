@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+ 
     public function up(): void
     {
         Schema::create('articles', function (Blueprint $table) {
@@ -20,13 +18,12 @@ return new class extends Migration
             $table->enum('version',['original','updated'])->default('original');
             $table->text('references')->nullable();
             $table->timestamps();
+            $table->unsignedBigInteger('original_id')->nullable()->after('id');
 
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+   
     public function down(): void
     {
         Schema::dropIfExists('articles');
