@@ -7,10 +7,12 @@ const {
 const { search } = require("./services/googleSearch");
 const { scrape } = require("./services/scrapper");
 const { rewrite } = require("./services/llm");
-
+const app = express();
 
 app.use(cors({
-  origin: "https://beyond-chats-article-processing-enh.vercel.app/" 
+    origin: "https://beyond-chats-article-processing-enh.vercel.app", 
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
 
 (async () => {
