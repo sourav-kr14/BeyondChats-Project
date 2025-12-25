@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Article extends Model
 {
@@ -18,4 +19,16 @@ class Article extends Model
         'version',
         'references',
     ];
+
+    protected $casts = [
+        'references' => 'array',
+        'version' => 'integer',
+    ];
+
+   
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(fn ($article) => $article->slug ??= Str::slug($article->title));
+    }
 }
