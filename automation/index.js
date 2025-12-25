@@ -9,6 +9,7 @@ const { scrape } = require("./services/scrapper");
 const { rewrite } = require("./services/llm");
 const express = require('express');
 const app = express();
+const cors=require('cors');
 
 app.use(cors({
     origin: "https://beyond-chats-article-processing-enh.vercel.app", 
