@@ -12,7 +12,8 @@ const App = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:8000/api/articles');
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+     const res = await axios.get(`${API_URL}/articles`);
       setArticles(res.data.data || res.data);
     } catch (err) {
       console.error("API Error:", err);
