@@ -33,6 +33,22 @@ This project has three main parts integrated into a single repository:
 2. Run `npm install`.
 3. Start the development server with `npm run dev`.
 
+## Cloud Configuration
+
+### 1. Render (Backend API)
+Set these in the **Environment** tab on Render:
+* `PORT`: 10000 (Render default)
+* `CORS_ORIGIN`: https://beyond-chats-article-processing-enh.vercel.app
+
+### 2. Railway (Automation Worker)
+Set these in the **Variables** tab on Railway:
+* `BACKEND_URL`: https://beyondchats-project-6.onrender.com
+* `GROQ_API_KEY`: Your LLM service key
+
+### 3. Vercel (Frontend)
+Set this in **Project Settings**:
+* `NEXT_PUBLIC_API_URL`: https://beyondchats-project-6.onrender.com
+
 ## Data Flow Summary
 1. **Scrape**: The five oldest articles are fetched from BeyondChats and stored via the Laravel API.
 2. **Process**: The NodeJS script fetches the latest article, searches Google, scrapes the top results, and calls the LLM.
