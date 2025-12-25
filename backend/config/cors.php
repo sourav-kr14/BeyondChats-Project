@@ -11,6 +11,8 @@ return [
     | or "CORS". This determines what cross-origin operations may execute
     | in web browsers. You are free to adjust these settings as needed.
     |
+    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+    |
     */
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
@@ -18,10 +20,9 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-    'http://localhost:3000', 
-    'http://localhost:5173', 
-    
-    'https://beyond-chats-article-processing-enh.vercel.app' 
+    'https://beyond-chats-article-processing-enh.vercel.app',
+    'https://pure-inspiration-production.up.railway.app',
+    'http://localhost:3000',
 ],
 
     'allowed_origins_patterns' => [],
@@ -32,6 +33,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true, // Set to true if using Sanctum or Cookies
+    'supports_credentials' => false,
 
 ];
