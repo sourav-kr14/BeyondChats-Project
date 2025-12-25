@@ -1,4 +1,4 @@
-# BeyondChats Article Processing & Enhancement Suite
+# BeyondChats Article Processing & Enhancement 
 
 A complete system designed to scrape, manage, and improve blog content using AI. This project showcases a pipeline that goes from raw data extraction to content optimization driven by an LLM.
 
